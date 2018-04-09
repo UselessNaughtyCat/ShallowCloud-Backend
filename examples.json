@@ -1,0 +1,57 @@
+//PC
+{
+	"PC":{
+//		"id": "",  --необязательно
+		"HDD": "",
+		"RAM": "",
+		"processor": "",
+		"domain_name": "",
+		"comment": "",
+		"MAC": "",
+		"Video_Outputs":[
+			"VGA",
+			"DVI"
+		]
+	}
+}
+
+//Monitor
+{
+	"Monitor":{
+//		"id": "",  --необязательно
+		"diagonal": "",
+		"name": "",
+		"comment": "",
+		"Video_Outputs":[
+			"VGA"
+		]
+	}
+}
+
+//Headphone
+{
+	"Headphone":{
+//		"id": "",   --необязательно
+		"name": "",
+		"comment": ""
+	}
+}
+
+//Workspace
+{
+	"Workspace":{
+//		"id": "",  --необязательно
+		"comment": "",
+		"PCs":[
+			"1", 
+			"2"
+		],
+		"Monitors":[
+			"2"
+		],
+		"Headphones":[
+			"1",
+			"2"
+		]
+	}
+}
