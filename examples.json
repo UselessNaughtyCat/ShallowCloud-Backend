@@ -1,57 +1,87 @@
-//PC
+//User registration
 {
-	"PC":{
-//		"id": "",  --необязательно
-		"HDD": "",
-		"RAM": "",
-		"processor": "",
-		"domain_name": "",
-		"comment": "",
-		"MAC": "",
-		"Video_Outputs":[
-			"VGA",
-			"DVI"
-		]
-	}
+    "Login": "login",
+    "Password": "password",
+    "FirstName": "first_name",
+    "LastName": "last_name"
 }
 
-//Monitor
+//Login
 {
-	"Monitor":{
-//		"id": "",  --необязательно
-		"diagonal": "",
-		"name": "",
-		"comment": "",
-		"Video_Outputs":[
-			"VGA"
-		]
-	}
+    "Login": "login",
+    "Password": "password"
 }
 
-//Headphone
+//Authentication check (for update, select)
 {
-	"Headphone":{
-//		"id": "",   --необязательно
-		"name": "",
-		"comment": ""
-	}
+    "Login": "login",
+    "Token": "generated token",
+    "Content": {}
 }
 
-//Workspace
+//Content: Song
 {
-	"Workspace":{
-//		"id": "",  --необязательно
-		"comment": "",
-		"PCs":[
-			"1", 
-			"2"
-		],
-		"Monitors":[
-			"2"
-		],
-		"Headphones":[
-			"1",
-			"2"
-		]
-	}
+    "ID": "id",
+    "Performer": "performer.name",
+    "Name": "name",
+    "Album": "album.name",
+    "Genre": "genre.name",
+    "ReleaseDate": "release_date"
+}
+
+//Content: Album
+{
+    "ID": "id",
+    "Performer": "performer.name",
+    "Name": "name",
+    "ReleaseDate": "release_date",
+    "Songs": [
+        {
+            "ID": "song.id",
+            "Name": "song.name"
+        },
+        ...
+    ]
+}
+
+//Content: Genre
+{
+    "ID": "id",
+    "Name": "name"
+}
+
+//Content: Performer
+{
+    "ID": "id",
+    "UserID": "user.id",
+    "Name": "name",
+    "FullName": [
+        {
+            "FirstName": "user.first_name",
+            "LastName": "user.last_name"
+        }
+    ]
+}
+
+//Content: User
+{
+    "ID": "id",
+    "Login": "login",
+    "RegistrationDate": "reg_date",
+    "FirstName": "first_name",
+    "LastName": "last_name",
+    "Subscriptions": [
+       {
+            "ID": "subscription.id", 
+            "Name": "subscription.name" 
+       },
+       ...
+    ],
+    "FavoriteSongs": [
+        {
+            "ID": "favoriteSongs.id",
+            "Name": "favoriteSongs.name"
+        },
+       ...
+    ]
 }
