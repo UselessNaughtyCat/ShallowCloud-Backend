@@ -1,21 +1,21 @@
 <?php
 
-require '../src/components/TableHandler.php';
+require_once '../src/components/TableHandler.php';
 
 /**
 * Song Table
 */
 class Performer extends TableHandler
 {
+    public $rules = [
+        // "All", "Authorized", "Nobody"
+        "select" => "All",
+        "insert" => "Authorized",
+        "update" => "Authorized",
+        "delete" => "Nobody"
+    ];
     protected $tableName = "performer";
     protected $tableMainID = "id";
-    protected $rules = [
-        // "All", "Authorized", "Nobody"
-        "select" = "All",
-        "insert" = "Authorized",
-        "update" = "Authorized",
-        "delete" = "Nobody"
-    ];
     protected $tableLinks = [
         "USER" => [ 
             TableHandler::LINKS_ENUM_STRING => ["user"],

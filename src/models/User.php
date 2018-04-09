@@ -1,21 +1,21 @@
 <?php
 
-require '../src/components/TableHandler.php';
+require_once '../src/components/TableHandler.php';
 
 /**
 * User Table
 */
 class User extends TableHandler
 {
+    public $rules = [
+        // "All", "Authorized", "Nobody"
+        "select" => "All",
+        "insert" => "Nobody",
+        "update" => "Authorized",
+        "delete" => "Nobody"
+    ];
     protected $tableName = "user";
     protected $tableMainID = "id";
-    protected $rules = [
-        // "All", "Authorized", "Nobody"
-        "select" = "All",
-        "insert" = "Nobody",
-        "update" = "Authorized",
-        "delete" = "Nobody"
-    ];
     protected $tableLinks = [
         "SUB" => [ 
             TableHandler::LINKS_ENUM_STRING => ["performer", "user_subscriptions"],

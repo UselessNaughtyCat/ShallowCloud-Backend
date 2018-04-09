@@ -2,16 +2,18 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-require '../src/controllers/TableController.php';
-
-$app->post('/login', function (Request $request, Response $response) {
-
-});
+require_once '../src/controllers/UserController.php';
+require_once '../src/controllers/TableController.php';
 
 $app->post('/registration', function (Request $request, Response $response) {
-    
+    $body      = $request->getParsedBody();
+    return $response->withStatus(UserController::registration($body));
 });
 
+$app->post('/login', function (Request $request, Response $response) {
+    $body      = $request->getParsedBody();
+    return $response->withJson(UserController::login($body));
+});
 
 $app->get('/{className}[/[{id}]]', function (Request $request, Response $response) {
     $className = $request->getAttribute('className');

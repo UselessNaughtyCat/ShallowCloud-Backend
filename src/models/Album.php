@@ -1,22 +1,22 @@
 <?php
 
-require '../src/components/TableHandler.php';
+require_once '../src/components/TableHandler.php';
 
 /**
 * Album Table
 */
 class Album extends TableHandler
 {
+    public $rules = [
+        // "All", "Authorized", "Nobody"
+        "select" => "All",
+        "insert" => "Authorized",
+        "update" => "Authorized",
+        "delete" => "Nobody"
+    ];
     protected $tableName = "album";
     protected $tableMainID = "id";
     protected $tableStrongLinks = true;
-    protected $rules = [
-        // "All", "Authorized", "Nobody"
-        "select" = "All",
-        "insert" = "Authorized",
-        "update" = "Authorized",
-        "delete" = "Nobody"
-    ];
     protected $tableLinks = [
         "PERFORMER" => [ 
             TableHandler::LINKS_ENUM_STRING => ["performer"],

@@ -1,7 +1,7 @@
 <?php
 
-require '../src/components/DB.php';
-require '../src/components/Utils.php';
+require_once '../src/components/DB.php';
+require_once '../src/components/Utils.php';
 
 /**
 * Table Handler
@@ -10,17 +10,17 @@ class TableHandler
 {
     protected const LINKS_ENUM_STRING = "__linksEnum";
 
+    public $rules = [
+        // "All", "Authorized", "Nobody"
+        "select" => "Nobody",
+        "insert" => "Nobody",
+        "update" => "Nobody",
+        "delete" => "Nobody"
+    ];
     protected $tableName;
     protected $tableMainID;
     protected $tableLinks;
     protected $tableFormat;
-    protected $rules = [
-        // "All", "Authorized", "Nobody"
-        "select" = "Nobody",
-        "insert" = "Nobody",
-        "update" = "Nobody",
-        "delete" = "Nobody"
-    ];
     protected $tableStrongLinks = false;
 
     private $dbConn;

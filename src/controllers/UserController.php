@@ -1,26 +1,21 @@
 <?php
 
+require_once '../src/components/UserHandler.php';
+require_once '../src/components/HTTPStatus.php';
+
 /**
 * User Controller
 */
 class UserController
 {
-    public static function registrate($values)
+    public static function registration($values)
     {
-        // "Login" => "login",
-        // "Password" => "password",
-        // "FirstName" => "first_name",
-        // "LastName" => "last_name",
-        
+        $success = UserHandler::registrate($values);
+        return $success ? HTTPStatus::OK : HTTPStatus::FORBIDDEN;
     }
 
-    public static function authenticate($login, $password)
+    public static function login($values)
     {
-        
-    }
-
-    public static function isAuthenticated($login, $token)
-    {
-        
+        return UserHandler::authenticate($values);
     }
 }
