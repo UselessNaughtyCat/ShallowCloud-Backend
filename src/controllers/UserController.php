@@ -16,6 +16,7 @@ class UserController
 
     public static function login($values)
     {
-        return UserHandler::authenticate($values);
+        $authenticated = UserHandler::authenticate($values);
+        return $authenticated !== false ? $authenticated : HTTPStatus::FORBIDDEN;
     }
 }

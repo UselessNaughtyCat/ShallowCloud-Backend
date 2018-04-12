@@ -12,9 +12,8 @@
     "Password": "password"
 }
 
-//Authentication check (for update, select)
+//Authentication check (for update, insert)
 {
-    "Login": "login",
     "Token": "generated token",
     "Content": {}
 }

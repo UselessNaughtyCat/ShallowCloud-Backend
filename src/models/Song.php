@@ -17,9 +17,9 @@ class Song extends TableHandler
     protected $tableName = "song";
     protected $tableMainID = "id";
     protected $tableLinks = [
-        "PERFORMER" => [ 
-            TableHandler::LINKS_ENUM_STRING => ["performer"],
-            "performer_id" => "performer.id",
+        "USER" => [ 
+            TableHandler::LINKS_ENUM_STRING => ["user"],
+            "user_id" => "user.id",
         ],
         "GENRE" => [ 
             TableHandler::LINKS_ENUM_STRING => ["genre"],
@@ -33,7 +33,7 @@ class Song extends TableHandler
     ];
     protected $tableFormat = [
         "ID" => "id",
-        "Performer" => "PERFORMER.name",
+        "User" => "USER.nickname",
         "Name" => "name",
         "Album" => "ALBUM.name",/*[ 
             "Name" => "ALBUM.name", 
@@ -41,5 +41,6 @@ class Song extends TableHandler
         ],*/
         "Genre" => "GENRE.name",
         "ReleaseDate" => "release_date",
+        "Source" => "src",
     ];
 }

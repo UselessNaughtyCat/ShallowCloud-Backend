@@ -18,9 +18,9 @@ class Album extends TableHandler
     protected $tableMainID = "id";
     protected $tableStrongLinks = true;
     protected $tableLinks = [
-        "PERFORMER" => [ 
-            TableHandler::LINKS_ENUM_STRING => ["performer"],
-            "performer_id" => "performer.id",
+        "USER" => [ 
+            TableHandler::LINKS_ENUM_STRING => ["user"],
+            "user_id" => "user.id",
         ],
         "SONG" => [ 
             TableHandler::LINKS_ENUM_STRING => ["song", "song_in_album"],
@@ -30,12 +30,12 @@ class Album extends TableHandler
     ];
     protected $tableFormat = [
         "ID" => "id",
-        "Performer" => "PERFORMER.name",
+        "User" => "USER.nickname",
         "Name" => "name",
         "ReleaseDate" => "release_date",
         "Songs" => [ 
             "ID" => "SONG.id", 
-            "Name" => "SONG.name",
+            // "Name" => "SONG.name",
         ],
     ];    
 }

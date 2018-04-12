@@ -1,39 +1,39 @@
 <?php
 
-require_once '../src/components/CryptoLib.php';
 require_once '../src/components/DB.php';
+
+use \Firebase\JWT\JWT;
 
 /**
 * User Controller
 */
 class UserHandler
 {
+    private const KEY = "kek";
+
     public static function registrate($values)
     {
         /*
         {
-            "Login": "login",
+            "E-mail": "login",
             "Password": "password",
             "FirstName": "first_name",
             "LastName": "last_name"
         }
         */
-        $login = $values["Login"];
+        $login = $values["E-mail"];
         $password = $values["Password"];
         $firstName = $values["FirstName"];
         $lastName = $values["LastName"];
 
         $db = new DB();
         $dbConn = $db->getDBConnection();
-        $result = $dbConn->query("SELECT login FROM user WHERE login = '$login'");
+        $result = $dbConn->query("SELECT email FROM user WHERE email = '$login'");
         $existedLogin = $result->fetchAll(PDO::FETCH_NUM)[0][0];
 
         if ($login !== $existedLogin) {
             $currentDate = date("Y-m-d H:i:s");
-            $dbConn->query("INSERT INTO user(login, password, reg_date, first_name, last_name) VALUES ('$login','$password','$currentDate','$firstName','$lastName')");
-            $result = $dbConn->query("SELECT id FROM user WHERE login='$login'");
-            $userId = $result->fetchAll(PDO::FETCH_NUM)[0][0];
-            $dbConn->query("INSERT INTO user_auth (user_id, salt, hash) VALUES ('$userId', null, null)");
+            $dbConn->query("INSERT INTO user(email, password, reg_date, first_name, last_name) VALUES ('$login','$password','$currentDate','$firstName','$lastName')");
             return true;
         } else {
             return false;
@@ -44,23 +44,27 @@ class UserHandler
     {
         /*
         {
-            "Login": "qwerty",
+            "E-mail": "login",
             "Password": "qwerty"
         }
         */
-        $login = $values["Login"];
+        $login = $values["E-mail"];
         $password = $values["Password"];
 
         $db = new DB();
         $dbConn = $db->getDBConnection();
-        $result = $dbConn->query("SELECT id FROM user WHERE login='$login' AND password='$password'");
+        $result = $dbConn->query("SELECT id FROM user WHERE email='$login' AND password='$password'");
         $userId = $result->fetchAll(PDO::FETCH_NUM)[0][0];
 
-        $token = UserHandler::generateToken($userId);
-        return array("Token" => $token);
+        if ($userId !== "" || $userId !== NULL){
+            $token = UserHandler::generateToken($userId);
+            return array("Token" => $token);
+        } else {
+            return false;
+        }
     }
 
-    public static function isAuthenticated($login, $token) 
+    public static function isTokenValid($token) 
     {
         /*
         {
@@ -69,40 +73,21 @@ class UserHandler
             "Content": {}
         }
         */
-        $db = new DB();
-        $dbConn = $db->getDBConnection();
-        $result = $dbConn->query("SELECT id FROM user WHERE login='$login'");
-        $userId = $result->fetchAll(PDO::FETCH_NUM)[0][0];
-
-        $result = $dbConn->query("SELECT hash, salt FROM user_auth WHERE user_id='$userId'");
-        $array = $result->fetchAll(PDO::FETCH_NUM);
-        $hash = $array[0][0];
-        $salt = $array[0][1];
-
-        return UserHandler::isTokenCorrect($hash, $token);
+        try {
+            $decoded = JWT::decode($token, UserHandler::KEY, array('HS256'));
+            // return (array) $decoded;
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     public static function generateToken($userId)
     {
-        $db = new DB();
-        $dbConn = $db->getDBConnection();
-
-        $token = CryptoLib::randomString(16);
-
-        // Generate a salt with the library by calling the generateSalt method
-        $salt = CryptoLib::generateSalt();
-        // Hash the token with the salt that was generated
-        $hash = CryptoLib::hash($token, $salt);
-        // Salt and hash are then stored in the database.
-        $dbConn->query("UPDATE user_auth SET salt='$salt', hash='$hash' WHERE user_id='$userId'");
-
-        return $token;
-    }
-
-    public static function isTokenCorrect($hash, $token)
-    {
-        // $hash and $salt are gotten later from the database, and the token is provided via a POST variable by the user
-        // If isHashCorrect is true, the user has provided the correct token.
-        return CryptoLib::validateHash($hash, $token);
+        $key = "kek";
+        $token = array(
+            "user_id" => "$userId"
+        );
+        return JWT::encode($token, UserHandler::KEY);
     }
 }

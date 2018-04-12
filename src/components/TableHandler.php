@@ -21,6 +21,7 @@ class TableHandler
     protected $tableMainID;
     protected $tableLinks;
     protected $tableFormat;
+    protected $selfLink;
     protected $tableStrongLinks = false;
 
     private $dbConn;
@@ -55,16 +56,21 @@ class TableHandler
                 $tmpFormat = $vFormat;
                 if (is_array($tmpFormat))
                     $tmpFormat = $tmpFormat[0];
+                    // print_r($vFormat);
 
                 preg_match('/(\w.*?)\.(\w.*)/', $tmpFormat, $matches);
                 if ($matches[1] !== null) {
                     $readyArray[$kFormat] = $this->selectByLinkId($id, $vFormat);
                 } elseif (is_array($vFormat)) {
+                    // echo "ebat";
                     $readyArray[$kFormat] = $this->selectByLinkIdMultiple($id, $vFormat);
                 } else {
+                    // echo "cyka";
                     $readyArray[$kFormat] = $this->getSQLValue("SELECT $vFormat FROM $this->tableName WHERE $this->tableMainID = $id", PDO::FETCH_NUM);
                     $readyArray[$kFormat] = $this->getFixedSQLValue($readyArray[$kFormat]);
                 }
+                // print_r($readyArray);
+                // echo "\n";
             }
         }
         return $readyArray;
@@ -78,6 +84,8 @@ class TableHandler
         $bigLinkKey;
         $bigLinkValue;
 
+        // print_r($fixedArray);
+
         foreach ($fixedArray as $kFA => $vFA) {
             preg_match('/(\w.*?)\.(\w.*)/', $kFA, $matches);
             $isLinkName = false;
@@ -85,8 +93,10 @@ class TableHandler
                 if ($k === $matches[1])
                     $isLinkName = true;
             if (!is_array($vFA) && !$isLinkName) {
-                $indexesString .= "$kFA, ";
-                $valuesString .= "'$vFA', ";
+                if ($vFA !== NULL){
+                    $indexesString .= "$kFA, ";
+                    $valuesString .= "'$vFA', ";
+                }
             } else {
                 $bigLinkKey = $kFA;
                 $bigLinkValue = $vFA;
@@ -97,6 +107,7 @@ class TableHandler
         $valuesString = substr($valuesString, 0, -2);
 
         $SQL = "INSERT INTO $this->tableName ($indexesString) VALUES ($valuesString)";
+        // echo "\n$SQL\n";
         $this->dbConn->query($SQL);
 
         $id = $this->getSQLValue("SELECT MAX($this->tableMainID) FROM $this->tableName", PDO::FETCH_NUM)[0][0] + 1;
@@ -276,34 +287,53 @@ class TableHandler
         $linkName = $matches[1];
         $linkField = $matches[2];
         $tableLink = [];
+        $linkNamesss;
+        $mainID = "$this->tableName.$this->tableMainID";
 
         foreach ($this->tableLinks as $kLink => $vLink)
-            if ($linkName === $kLink)
+            if ($linkName === $kLink){
+                $linkNamesss = $kLink;
                 $tableLink = $vLink;
+            }
 
         $count = count($tableLink[TableHandler::LINKS_ENUM_STRING]);
         if ($count > 0) {
             $linkTableName = $tableLink[TableHandler::LINKS_ENUM_STRING][0];
 
             $linksSelect = str_replace($linkName, $linkTable, $vFormat[0]);
+            // echo "\n".count($vFormat)."\n";
             for ($i=1; $i < count($vFormat); $i++) {
                 $linksSelect .= ', '.str_replace($linkName, $linkTable, $vFormat[$i]);
             }
 
             $linksFrom = "";
             for ($i=0; $i < count($tableLink[TableHandler::LINKS_ENUM_STRING]); $i++) { 
+                if ($tableLink[TableHandler::LINKS_ENUM_STRING][$i] === $this->tableName)
+                    continue;
                 $linksFrom .= ', '.$tableLink[TableHandler::LINKS_ENUM_STRING][$i];
             }
 
             $linksWhere = "";
             foreach ($tableLink as $k => $v) {
                 if ($k === TableHandler::LINKS_ENUM_STRING) continue;
+                if ($tableLink[TableHandler::LINKS_ENUM_STRING][1] !== null) {
+                    if ($linkNamesss === $this->selfLink){
+                        $tmp = str_replace($tableLink[TableHandler::LINKS_ENUM_STRING][1], "", $k);
+                        if (strpos($tmp, $this->tableName) > -1){
+                            $mainID = $k;
+                            continue;
+                        }
+                    }
+                }
+
                 $linksWhere .= " AND $k = $v";
             }
 
             $select = is_array($vFormat) ? $linksSelect : "$linkTableName.$linkField";
             $from = "$this->tableName".$linksFrom;
-            $where = "$this->tableName.$this->tableMainID = $id".$linksWhere;
+            $where = "$mainID = $id".$linksWhere;
+
+            // echo "\nSELECT $select FROM $from WHERE $where\n";
 
             $value = $this->getSQLValue("SELECT $select FROM $from WHERE $where", is_array($vFormat) ? PDO::FETCH_ASSOC : PDO::FETCH_NUM);
             $value = $this->getFixedSQLValue($value);
@@ -314,6 +344,7 @@ class TableHandler
     private function selectByLinkIdMultiple($id, $table)
     {
         $array;
+        // print_r($table);
         foreach ($table as $key => $value) {
             $array[$key] = $this->selectByLinkId($id, $value);
         }
@@ -330,6 +361,7 @@ class TableHandler
     private function getSQLValue($sqlString, $pdoFetch = PDO::FETCH_ASSOC)
     {
         $sql = $sqlString;
+        // echo "\n$sql\n";
         $result = $this->dbConn->query($sql);
         $array = $result->fetchAll($pdoFetch);
         return $array;
