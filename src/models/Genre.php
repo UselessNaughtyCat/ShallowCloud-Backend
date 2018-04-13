@@ -17,7 +17,7 @@ class Genre extends TableHandler
     protected $tableName = "genre";
     protected $tableMainID = "id";
     protected $tableFormat = [
-        "ID" => "id",
-        "Name" => "name",
+        "id" => "id",
+        "name" => "name",
     ];
 }

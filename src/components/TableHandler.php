@@ -112,7 +112,8 @@ class TableHandler
 
         $id = $this->getSQLValue("SELECT MAX($this->tableMainID) FROM $this->tableName", PDO::FETCH_NUM)[0][0] + 1;
 
-        $this->updateLinkValue($bigLinkKey, $bigLinkValue, $this->tableName, $id, false);
+        if ($this->tableLinks !== null)
+            $this->updateLinkValue($bigLinkKey, $bigLinkValue, $this->tableName, $id, false);
     }
 
     public function update($id, $array)
@@ -138,15 +139,21 @@ class TableHandler
         $settersString = substr($settersString, 0, -2);
 
         $SQL = "UPDATE $this->tableName SET $settersString WHERE $this->tableMainID = $id";
-        // echo "\n$SQL\n";
-        $this->dbConn->query($SQL);
+        // echo gettype($settersString);
+        // echo count($settersString);
+        if (gettype($settersString) !== "boolean" && count($settersString) !== 1){
+            // echo "\n$SQL\n";
+            $this->dbConn->query($SQL);
+        }
 
         $bigLinkOldValue;
         foreach ($this->getFixedArray($this->tableFormat, $this->select($id)) as $k => $v) {
             if ($k === $bigLinkKey)
                 $bigLinkOldValue = $v;
         }
-        $this->updateLinkValue($bigLinkKey, $bigLinkValue, $this->tableName, $id, true, $bigLinkOldValue);
+        // print_r($bigLinkKey);
+        if ($bigLinkKey !== null)
+            $this->updateLinkValue($bigLinkKey, $bigLinkValue, $this->tableName, $id, true, $bigLinkOldValue);
     }
 
     public function delete($id)

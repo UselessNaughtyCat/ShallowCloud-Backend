@@ -29,12 +29,12 @@ class Album extends TableHandler
         ],
     ];
     protected $tableFormat = [
-        "ID" => "id",
-        "User" => "USER.nickname",
-        "Name" => "name",
-        "ReleaseDate" => "release_date",
-        "Songs" => [ 
-            "ID" => "SONG.id", 
+        "id" => "id",
+        "user" => "USER.nickname",
+        "name" => "name",
+        "releaseDate" => "release_date",
+        "songs" => [ 
+            "id" => "SONG.id", 
             // "Name" => "SONG.name",
         ],
     ];    

@@ -30,16 +30,16 @@ class User extends TableHandler
         ],
     ];
     protected $tableFormat = [
-        "ID" => "id",
-        "E-Mail" => "email",
+        "id" => "id",
+        "e-mail" => "email",
         // "RegistrationDate" => "reg_date",
-        "Nickname" => "nickname",
-        "Subscriptions" => [ 
-            "ID" => "SUB.id", 
+        "nickname" => "nickname",
+        "subscriptions" => [ 
+            "id" => "SUB.id", 
             // "Name" => "SUB.name" 
         ],
-        "FavoriteSongs" => [ 
-            "ID" => "LIKES.id", 
+        "favoriteSongs" => [ 
+            "id" => "LIKES.id", 
             // "Name" => "LIKES.name" 
         ],
     ];    

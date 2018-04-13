@@ -14,7 +14,7 @@ $config = [
 $app = new \Slim\App($config);
 
 $container = $app->getContainer();
-$container['upload_directory'] = "uploads/";  //realpath(__DIR__ . '/..')."\\uploads\\";
+$container['upload_directory'] = "uploads";  //realpath(__DIR__ . '/..')."\\uploads\\";
 
 // require '../src/RouteController.php';
 // require '../public/fileTest.php';

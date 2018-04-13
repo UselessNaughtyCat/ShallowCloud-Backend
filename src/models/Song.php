@@ -32,15 +32,15 @@ class Song extends TableHandler
         ],
     ];
     protected $tableFormat = [
-        "ID" => "id",
-        "User" => "USER.nickname",
-        "Name" => "name",
-        "Album" => "ALBUM.name",/*[ 
+        "id" => "id",
+        "user" => "USER.nickname",
+        "name" => "name",
+        "album" => "ALBUM.name",/*[ 
             "Name" => "ALBUM.name", 
             "ReleaseDate" => "ALBUM.release_date", 
         ],*/
-        "Genre" => "GENRE.name",
-        "ReleaseDate" => "release_date",
-        "Source" => "src",
+        "genre" => "GENRE.name",
+        "releaseDate" => "release_date",
+        "source" => "src",
     ];
 }

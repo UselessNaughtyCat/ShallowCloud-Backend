@@ -1,85 +1,61 @@
 //User registration
 {
-    "Login": "login",
-    "Password": "password",
-    "FirstName": "first_name",
-    "LastName": "last_name"
+    "e-mail": "email",
+    "password": "password",
+    "nickname": "nickname",
 }
 
 //Login
 {
-    "Login": "login",
-    "Password": "password"
+    "e-mail": "email",
+    "password": "password",
 }
 
-//Authentication check (for update, insert)
+//Content: Genre
 {
-    "Token": "generated token",
-    "Content": {}
+    "id": "id",
+    "name": "name"
 }
 
 //Content: Song
 {
-    "ID": "id",
-    "Performer": "performer.name",
-    "Name": "name",
-    "Album": "album.name",
-    "Genre": "genre.name",
-    "ReleaseDate": "release_date"
+    "id": "id", // for adding or editing should not exist
+    "performer": "performer.name",
+    "name": "name",
+    "album": "album.name",
+    "genre": "genre.name",
+    "releaseDate": "release_date",
+    "source": "src"
 }
 
 //Content: Album
 {
-    "ID": "id",
-    "Performer": "performer.name",
-    "Name": "name",
-    "ReleaseDate": "release_date",
-    "Songs": [
+    "id": "id", // for adding or editing should not exist
+    "performer": "performer.name",
+    "name": "name",
+    "releaseDate": "release_date",
+    "songs": [
         {
-            "ID": "song.id",
-            "Name": "song.name"
+            "id": "song.id"
         },
         ...
     ]
 }
 
-//Content: Genre
-{
-    "ID": "id",
-    "Name": "name"
-}
-
-//Content: Performer
-{
-    "ID": "id",
-    "UserID": "user.id",
-    "Name": "name",
-    "FullName": [
-        {
-            "FirstName": "user.first_name",
-            "LastName": "user.last_name"
-        }
-    ]
-}
-
 //Content: User
 {
-    "ID": "id",
-    "Login": "login",
-    "RegistrationDate": "reg_date",
-    "FirstName": "first_name",
-    "LastName": "last_name",
-    "Subscriptions": [
+    "id": "id",
+    "login": "login",
+    "nickname": "nickname",
+    "subscriptions": [
        {
-            "ID": "subscription.id", 
-            "Name": "subscription.name" 
+            "id": "subscription.id"
        },
        ...
     ],
-    "FavoriteSongs": [
+    "favoriteSongs": [
         {
-            "ID": "favoriteSongs.id",
-            "Name": "favoriteSongs.name"
+            "id": "favoriteSongs.id"
         },
        ...
     ]

@@ -20,7 +20,7 @@ class TableController
         if ($id !== "ALL" && !is_numeric($id)) 
             return HTTPStatus::BAD_REQUEST;
 
-        require $path;
+        require_once $path;
 
         $currentTable = new $className();
         if (TableController::isAvalaible($currentTable->rules["select"], $token)){
@@ -30,11 +30,13 @@ class TableController
                 return $currentTable->selectAll();
             }
         }
+        elseif ($isAvalaible === -1)
+            return HTTPStatus::FORBIDDEN;
         else
             return HTTPStatus::UNAUTHORIZED;
     }
 
-    public static function handleInsert($className, $array, $token, $uploadedFile, $directory)
+    public static function handleInsert($className, $array, $token)
     {
         $className = ucfirst(substr($className, 0, -1));
         $path = '../src/models/'.$className.'.php';
@@ -42,20 +44,16 @@ class TableController
         if (!file_exists($path)) 
             return HTTPStatus::NOT_FOUND;
 
-        require $path; 
+        require_once $path; 
 
         $currentTable = new $className();
-        if (TableController::isAvalaible($currentTable->rules["insert"], $token)){
-            if ($className === "Song"){
-                if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
-                    $filename = moveUploadedFile($directory, $uploadedFile);
-                    // $response->write('uploaded ' . $filename . '<br/>');
-                    $array["Source"] = "$directory.$filename";
-                }
-            }
+        $isAvalaible = TableController::isAvalaible($currentTable->rules["insert"], $token);
+        if ($isAvalaible === true){
             $currentTable->insert($array);
             return HTTPStatus::OK;
         }
+        elseif ($isAvalaible === -1)
+            return HTTPStatus::FORBIDDEN;
         else
             return HTTPStatus::UNAUTHORIZED;
     }
@@ -68,13 +66,16 @@ class TableController
         if (!file_exists($path)) 
             return HTTPStatus::NOT_FOUND;
 
-        require $path; 
+        require_once $path; 
 
         $currentTable = new $className();
-        if (TableController::isAvalaible($currentTable->rules["update"], $token)){
+        $isAvalaible = TableController::isAvalaible($currentTable->rules["update"], $token);
+        if ($isAvalaible === true){
             $currentTable->update($id, $array);
             return HTTPStatus::OK;
         }
+        elseif ($isAvalaible === -1)
+            return HTTPStatus::FORBIDDEN;
         else
             return HTTPStatus::UNAUTHORIZED;
     }
@@ -96,19 +97,8 @@ class TableController
                 break;
             
             case 'Nobody':
-                return false;
+                return -1;
                 break;
         }
-    }
-
-    public static function moveUploadedFile($directory, UploadedFile $uploadedFile)
-    {
-        $extension = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
-        $basename = bin2hex(random_bytes(8)); // see http://php.net/manual/en/function.random-bytes.php
-        $filename = sprintf('%s.%0.8s', $basename, $extension);
-
-        $uploadedFile->moveTo($directory . DIRECTORY_SEPARATOR . $filename);
-
-        return $filename;
     }
 }

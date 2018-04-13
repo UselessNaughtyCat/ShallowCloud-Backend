@@ -13,18 +13,9 @@ class UserHandler
 
     public static function registrate($values)
     {
-        /*
-        {
-            "E-mail": "login",
-            "Password": "password",
-            "FirstName": "first_name",
-            "LastName": "last_name"
-        }
-        */
-        $login = $values["E-mail"];
-        $password = $values["Password"];
-        $firstName = $values["FirstName"];
-        $lastName = $values["LastName"];
+        $login = $values["e-mail"];
+        $password = $values["password"];
+        $nickname = $values["nickname"];
 
         $db = new DB();
         $dbConn = $db->getDBConnection();
@@ -33,7 +24,7 @@ class UserHandler
 
         if ($login !== $existedLogin) {
             $currentDate = date("Y-m-d H:i:s");
-            $dbConn->query("INSERT INTO user(email, password, reg_date, first_name, last_name) VALUES ('$login','$password','$currentDate','$firstName','$lastName')");
+            $dbConn->query("INSERT INTO user(email, password, reg_date, nickname) VALUES ('$login','$password','$currentDate','$nickname')");
             return true;
         } else {
             return false;
@@ -48,8 +39,8 @@ class UserHandler
             "Password": "qwerty"
         }
         */
-        $login = $values["E-mail"];
-        $password = $values["Password"];
+        $login = $values["e-mail"];
+        $password = $values["password"];
 
         $db = new DB();
         $dbConn = $db->getDBConnection();
@@ -86,8 +77,14 @@ class UserHandler
     {
         $key = "kek";
         $token = array(
-            "user_id" => "$userId"
+            "id" => "$userId"
         );
         return JWT::encode($token, UserHandler::KEY);
+    }
+
+    public static function decodeToken($token)
+    {
+        $decoded = JWT::decode($token, UserHandler::KEY, array('HS256'));
+        return (array) $decoded;
     }
 }
